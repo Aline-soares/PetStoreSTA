@@ -3,6 +3,7 @@ package petstore;
 
 // 2 - Bibliotecas
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
@@ -11,7 +12,7 @@ import java.nio.file.Paths;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.*;
 
 // 3 - Classe
 public class Pet {
@@ -105,6 +106,22 @@ public class Pet {
                 .body("message", is(petId))
 
 
+        ;
+    }
+    @Test //(priority = 5)
+    public void consultarPetporStatus(){
+        String status = "available";
+
+        given()
+                .contentType("application/json")
+                .log().all()
+        .when()
+                .get(uri + "/findByStatus?status=" + status)
+        .then()
+                .log().all()
+                .statusCode(200)
+                .body("name[]", everyItem(equalTo("Agnes")))
+                //.body("name", contains("[" + "Agnes" + "]"))
         ;
     }
 
